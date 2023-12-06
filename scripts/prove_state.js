@@ -32,7 +32,7 @@ async function challengeState(batchIndex) {
     let rollup = new ethers.Contract(rollup_address, Rollup_Artifact.abi, signer);
 
     const proof = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data"));
-    let tx = await rollup.proveState(batchIndex, proof, overrides);
+    let tx = await rollup.proveState(batchIndex, proof);
     await tx.wait();
     console.log("==============================");
     let receipt = await customHttpProvider.getTransactionReceipt(tx.hash);
