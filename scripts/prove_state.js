@@ -14,8 +14,8 @@ const overrides = {
 async function main() {
 
 
-    // await querySetting();
-    await challengeState(28);
+    await querySetting();
+    // await challengeState(28);
 
 }
 
@@ -33,12 +33,12 @@ async function challengeState(batchIndex) {
 
     let rollup = new ethers.Contract(rollup_address, Rollup_Artifact.abi, signer);
 
-    // const proof = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data"));
-    const proof = JSON.parse(fs.readFileSync("../prover/proof/batch_28/full_proof_batch_agg.json"));
+    const proof = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data"));
+    // const proof = JSON.parse(fs.readFileSync("../prover/proof/batch_28/full_proof_batch_agg.json"));
     console.log("proof: " + proof.proof);
 
     // let proof = loadFunctionData();
-    let tx = await rollup.proveState(batchIndex, ethers.utils.toUtf8Bytes(proof.proof));
+    let tx = await rollup.proveState(batchIndex, proof);
     await tx.wait();
     console.log("==============================");
     let receipt = await customHttpProvider.getTransactionReceipt(tx.hash);
@@ -54,10 +54,10 @@ async function querySetting(){
     );
 
     const signer = new ethers.Wallet(privateKey, customHttpProvider);
-    console.log("signer.address: " + signer.address);
+    // console.log("signer.address: " + signer.address);
 
     let rollup_address = requireEnv("ROLLUP_ADDRESS");
-    console.log("rollup_address: " + rollup_address);
+    // console.log("rollup_address: " + rollup_address);
 
     let rollup = new ethers.Contract(rollup_address, Rollup_Artifact.abi, signer);
 
@@ -65,6 +65,12 @@ async function querySetting(){
     // let proof = loadFunctionData();
     let verifier = await rollup.verifier();
     console.log("verifier: " + verifier);
+
+    let layer2ChainId = await rollup.layer2ChainId();
+    console.log("layer2ChainId: " + layer2ChainId);
+
+    let committedBatch = await rollup.committedBatchStores(28);
+    console.log("committedBatch: " + committedBatch);
 
 }
 
