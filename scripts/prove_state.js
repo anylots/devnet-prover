@@ -74,10 +74,10 @@ async function querySetting(){
     console.log("committedBatch: " + committedBatch);
 
 
-    const pi = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_1/pi_batch_agg.data"));
+    const pi = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/pi_batch_agg.data"));
     console.log("pi: " + pi);
 
-    // const pi_value = ethers.utils.hexZeroPad(fs.readFileSync("../prover/proof/batch_1/pi_batch_agg.data"));
+    // const pi_value = ethers.utils.hexZeroPad(fs.readFileSync("../prover/proof/batch_28/pi_batch_agg.data"));
     // console.log("pi_value: " + pi_value);
 
 
