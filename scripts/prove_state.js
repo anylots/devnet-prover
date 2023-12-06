@@ -4,6 +4,11 @@ const Rollup_Artifact = require("./Rollup.json");
 const fs = require('fs');
 require("dotenv").config({ path: ".env" });
 
+const overrides = {
+    gasLimit: 15000000,
+    gasPrice: 100 * 10 ** 9,
+};
+
 // This is a script for deploying your contracts. You can adapt it to deploy
 // yours, or create new ones.
 async function main() {
@@ -27,7 +32,7 @@ async function challengeState(batchIndex) {
     let rollup = new ethers.Contract(rollup_address, Rollup_Artifact.abi, signer);
 
     const proof = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data"));
-    let tx = await rollup.proveState(batchIndex, proof);
+    let tx = await rollup.proveState(batchIndex, proof, overrides);
     await tx.wait();
     console.log("==============================");
     let receipt = await customHttpProvider.getTransactionReceipt(tx.hash);
@@ -35,11 +40,11 @@ async function challengeState(batchIndex) {
 }
 
 function loadFunctionData() {
-    const inputBuffer = fs.readFileSync('./input.data');
+    const inputBuffer = fs.readFileSync('../prover/proof/batch_28/proof_batch_agg.data');
     const inputString = inputBuffer.toString();
 
     const abiInterface = new ethers.utils.Interface(Rollup_Artifact.abi);
-    const decoded = abiInterface.decodeFunctionData("commitBatch", inputString);
+    const decoded = abiInterface.decodeFunctionData("proveState", inputString);
     // console.log(decoded[0].chunks);
     return decoded;
 
