@@ -42,8 +42,8 @@ async function challengeState(batchIndex) {
     let tx = await rollup.proveState(batchIndex, proof);
     await tx.wait();
     console.log("==============================");
-    let receipt = await customHttpProvider.getTransactionReceipt(tx.hash);
-    console.log("challengeState_receipt: " + JSON.stringify(receipt));
+    // let receipt = await customHttpProvider.getTransactionReceipt(tx.hash);
+    // console.log("challengeState_receipt: " + JSON.stringify(receipt));
 }
 
 async function querySetting(){
@@ -76,6 +76,9 @@ async function querySetting(){
 
     const pi = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/pi_batch_agg.data"));
     console.log("pi: " + pi);
+
+    const pi_value = ethers.utils.hexValue(fs.readFileSync("../prover/proof/batch_28/pi_batch_agg.data"));
+    console.log("pi_value: " + pi_value);
 
 
 }
