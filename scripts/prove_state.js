@@ -72,6 +72,11 @@ async function querySetting(){
     let committedBatch = await rollup.committedBatchStores(28);
     console.log("committedBatch: " + committedBatch);
 
+
+    const pi = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/pi_batch_agg.data"));
+    console.log("pi: " + pi);
+
+
 }
 
 function loadFunctionData() {
