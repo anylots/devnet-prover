@@ -15,7 +15,7 @@ async function main() {
 
 
     await querySetting();
-    // await challengeState(28);
+    await challengeState(28);
 
 }
 
@@ -35,7 +35,8 @@ async function challengeState(batchIndex) {
 
     const proof = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data"));
     // const proof = JSON.parse(fs.readFileSync("../prover/proof/batch_28/full_proof_batch_agg.json"));
-    console.log("proof: " + proof.proof);
+    // console.log("proof: " + proof.proof);
+    console.log("==============================");
 
     // let proof = loadFunctionData();
     let tx = await rollup.proveState(batchIndex, proof);
