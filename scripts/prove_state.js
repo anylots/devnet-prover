@@ -14,7 +14,7 @@ const overrides = {
 async function main() {
 
 
-    await querySetting();
+    // await querySetting();
     await challengeState(28);
 
 }
@@ -34,9 +34,11 @@ async function challengeState(batchIndex) {
     let rollup = new ethers.Contract(rollup_address, Rollup_Artifact.abi, signer);
 
     // const proof = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data"));
-    const proof = fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data");
+    const proof = JSON.parse(fs.readFileSync("../prover/proof/batch_28/full_proof_batch_agg.json"));
+    console.log("proof: " + proof.proof);
+
     // let proof = loadFunctionData();
-    let tx = await rollup.proveState(batchIndex, proof);
+    let tx = await rollup.proveState(batchIndex, ethers.utils.toUtf8Bytes(proof.proof));
     await tx.wait();
     console.log("==============================");
     let receipt = await customHttpProvider.getTransactionReceipt(tx.hash);
