@@ -13,6 +13,8 @@ const overrides = {
 // yours, or create new ones.
 async function main() {
 
+
+    await querySetting();
     await challengeState(28);
 
 }
@@ -31,12 +33,37 @@ async function challengeState(batchIndex) {
 
     let rollup = new ethers.Contract(rollup_address, Rollup_Artifact.abi, signer);
 
-    const proof = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data"));
+    // const proof = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data"));
+    const proof = fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data");
+    // let proof = loadFunctionData();
     let tx = await rollup.proveState(batchIndex, proof);
     await tx.wait();
     console.log("==============================");
     let receipt = await customHttpProvider.getTransactionReceipt(tx.hash);
     console.log("challengeState_receipt: " + JSON.stringify(receipt));
+}
+
+async function querySetting(){
+    
+
+    let privateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+    let customHttpProvider = new ethers.providers.JsonRpcProvider(
+        "http://localhost:9545"
+    );
+
+    const signer = new ethers.Wallet(privateKey, customHttpProvider);
+    console.log("signer.address: " + signer.address);
+
+    let rollup_address = requireEnv("ROLLUP_ADDRESS");
+    console.log("rollup_address: " + rollup_address);
+
+    let rollup = new ethers.Contract(rollup_address, Rollup_Artifact.abi, signer);
+
+    // const proof = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/proof_batch_agg.data"));
+    // let proof = loadFunctionData();
+    let verifier = await rollup.verifier();
+    console.log("verifier: " + verifier);
+
 }
 
 function loadFunctionData() {
