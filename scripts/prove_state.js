@@ -6,7 +6,7 @@ require("dotenv").config({ path: ".env" });
 
 const overrides = {
     gasLimit: 15000000,
-    gasPrice: 100 * 10 ** 9,
+    gasPrice: 50 * 10 ** 9,
 };
 
 // This is a script for deploying your contracts. You can adapt it to deploy
