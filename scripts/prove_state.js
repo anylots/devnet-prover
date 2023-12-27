@@ -15,7 +15,7 @@ async function main() {
 
 
     await querySetting();
-    await challengeState(28);
+    // await challengeState(28);
 
 }
 
@@ -70,11 +70,11 @@ async function querySetting(){
     let layer2ChainId = await rollup.layer2ChainId();
     console.log("layer2ChainId: " + layer2ChainId);
 
-    let committedBatch = await rollup.committedBatchStores(28);
+    let committedBatch = await rollup.committedBatchStores(45);
     console.log("committedBatch: " + committedBatch);
 
 
-    const pi = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_28/pi_batch_agg.data"));
+    const pi = ethers.utils.hexlify(fs.readFileSync("../prover/proof/batch_45/pi_batch_agg.data"));
     console.log("pi: " + pi);
 
     // const pi_value = ethers.utils.hexZeroPad(fs.readFileSync("../prover/proof/batch_28/pi_batch_agg.data"));

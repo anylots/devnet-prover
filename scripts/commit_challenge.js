@@ -7,15 +7,13 @@ const fs = require('fs');
 // yours, or create new ones.
 async function main() {
 
-    for (let i = 0; i < 10; i++) {
-        console.log(i);
-
+    for (let i = 0; i < 100; i++) {
+        
         await commitBatch();
+        
+        await new Promise(resolve => setTimeout(resolve, 10000));  
 
-        setTimeout(function () {
-        }, 10000);
-
-        await challengeState(i + 1);
+        // await challengeState(i + 1);
     }
 
 }
@@ -47,10 +45,13 @@ async function commitBatch() {
         signature: batchSignature
     };
 
-    let input = loadFunctionData();
+    // let input = loadFunctionData();
+
+    let batch = loadBatchData();
+    console.log("batch: " + batch.withdrawalRoot);
 
 
-    let tx = await rollup.commitBatch(input[0]);
+    let tx = await rollup.commitBatch(batch);
     // console.log("tx: " + JSON.stringify(tx));
 
     await tx.wait();
@@ -86,8 +87,13 @@ function loadFunctionData() {
     const decoded = abiInterface.decodeFunctionData("commitBatch", inputString);
     // console.log(decoded[0].chunks);
     return decoded;
+}
 
+function loadBatchData() {
+    const inputBuffer = fs.readFileSync('./batch.json');
+    const inputString = inputBuffer.toString();
 
+    return JSON.parse(inputString);
 }
 
 main()

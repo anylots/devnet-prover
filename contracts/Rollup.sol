@@ -11,6 +11,7 @@ contract Rollup {
         bytes32 prevStateRoot;
         bytes32 postStateRoot;
         bytes32 withdrawalRoot;
+        BatchSignature signature;
     }
 
     struct BatchSignature {
@@ -53,12 +54,8 @@ contract Rollup {
         emit CommitBatch(lastBatchIndex, batchHash);
     }
 
-    function challengeState(
-        uint64 batchIndex,
-        bytes calldata _aggrProof
-    ) external payable {
+    function challengeState(uint64 batchIndex) external payable {
         require(0 < batchIndex, "Batch already finalized");
-        require(_aggrProof.length > 0, "invalid proof");
 
         challenges[batchIndex] = BatchChallenge(
             batchIndex,
@@ -87,10 +84,28 @@ contract Rollup {
         emit ChallengeRes(_batchIndex, address(0), "prove success");
     }
 
-    function batchInChallenge(uint64 batchIndex) public view returns (bool) {
+    function batchInChallenge(uint256 batchIndex) public view returns (bool) {
         return
             challenges[batchIndex].challenger != address(0) &&
             !challenges[batchIndex].finished;
+    }
+
+    function isChallenger(address _challenger) external pure returns (bool) {
+        return true;
+    }
+
+    function FINALIZATION_PERIOD_SECONDS() external pure returns (uint256) {
+        return uint256(86400);
+    }
+
+    function PROOF_WINDOW() external pure returns (uint256) {
+        return uint256(86400);
+    }
+
+    function isBatchFinalized(
+        uint256 _batchIndex
+    ) external pure returns (bool) {
+        return false;
     }
 
     function computeBatchHash(
