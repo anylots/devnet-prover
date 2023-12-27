@@ -1,6 +1,6 @@
 #!/bin/bash
 
-base_url="http://127.0.0.1:8545"
+base_url="http://localhost:8545"
 start=$1
 # start=$((start + 0))
 
