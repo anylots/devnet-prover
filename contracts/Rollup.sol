@@ -28,6 +28,24 @@ contract Rollup {
         bool finished;
     }
 
+    struct BatchStore {
+        bytes32 batchHash;
+        uint256 originTimestamp;
+        uint256 finalizeTimestamp;
+        bytes32 prevStateRoot;
+        bytes32 postStateRoot;
+        bytes32 withdrawalRoot;
+        bytes32 dataHash;
+        address[] sequencers;
+        uint256 l1MessagePopped;
+        uint256 totalL1MessagePopped;
+        bytes skippedL1MessageBitmap;
+        uint256 blockNumber;
+        bytes32 blobVersionedHash;
+    }
+
+    mapping(uint256 => BatchStore) public committedBatchStores;
+
     uint256 lastBatchIndex;
 
     /**
@@ -45,12 +63,36 @@ contract Rollup {
 
     event ChallengeRes(uint64 indexed batchIndex, address winner, string res);
 
-    function commitBatch(BatchData calldata batchData) external {
+    function commitBatch(
+        BatchData calldata batchData,
+        uint256 version,
+        uint256[] memory sequencerIndex,
+        bytes memory signature
+    ) external {
         uint256 _chunksLength = batchData.chunks.length;
         require(_chunksLength > 0, "batch is empty");
 
         lastBatchIndex = lastBatchIndex + 1;
         bytes32 batchHash = computeBatchHash(lastBatchIndex, uint256(1));
+        address[] memory _sequencer = new address[](1);
+        _sequencer[0] = msg.sender;
+
+        committedBatchStores[lastBatchIndex] = BatchStore(
+            batchHash,
+            block.timestamp,
+            block.timestamp + uint256(86400),
+            batchData.prevStateRoot,
+            batchData.postStateRoot,
+            batchData.withdrawalRoot,
+            batchHash,
+            _sequencer,
+            uint256(128),
+            uint256(64),
+            batchData.skippedL1MessageBitmap,
+            uint256(100),
+            batchHash
+        );
+
         emit CommitBatch(lastBatchIndex, batchHash);
     }
 

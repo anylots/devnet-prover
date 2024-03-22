@@ -7,14 +7,14 @@ const fs = require('fs');
 // yours, or create new ones.
 async function main() {
 
-    for (let i = 0; i < 100; i++) {
-        
-        await commitBatch();
-        
-        await new Promise(resolve => setTimeout(resolve, 10000));  
+    await commitBatch();
+    // for (let i = 0; i < 100; i++) {
 
-        // await challengeState(i + 1);
-    }
+
+    //     await new Promise(resolve => setTimeout(resolve, 10000));  
+
+    //     // await challengeState(i + 1);
+    // }
 
 }
 
@@ -35,14 +35,18 @@ async function commitBatch() {
     };
 
     let batchData = {
-        version: 1,
-        parentBatchHeader: ethers.utils.hexlify(ethers.utils.toUtf8Bytes("parentBatchHeader")),
-        chunks: ["0x010203", "0x040506"],
-        skippedL1MessageBitmap: ethers.utils.hexlify(ethers.utils.toUtf8Bytes("skippedL1MessageBitmap")),
-        prevStateRoot: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("prevStateRoot")),
-        postStateRoot: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("postStateRoot")),
-        withdrawalRoot: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("withdrawalRoot")),
-        signature: batchSignature
+        batchData: {
+            version: 1,
+            parentBatchHeader: ethers.utils.hexlify(ethers.utils.toUtf8Bytes("parentBatchHeader")),
+            chunks: ["0x010203", "0x040506"],
+            skippedL1MessageBitmap: ethers.utils.hexlify(ethers.utils.toUtf8Bytes("skippedL1MessageBitmap")),
+            prevStateRoot: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("prevStateRoot")),
+            postStateRoot: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("postStateRoot")),
+            withdrawalRoot: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("withdrawalRoot")),
+            signature: batchSignature
+        }, version: 1,
+        sequencerIndex: [1, 2, 3],
+        signature: "0x010203"
     };
 
     // let input = loadFunctionData();
@@ -51,7 +55,7 @@ async function commitBatch() {
     console.log("batch: " + batch.withdrawalRoot);
 
 
-    let tx = await rollup.commitBatch(batch);
+    let tx = await rollup.commitBatch(batch.batchData, batch.version, batch.sequencerIndex, batch.signature);
     // console.log("tx: " + JSON.stringify(tx));
 
     await tx.wait();
